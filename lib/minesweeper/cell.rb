@@ -16,6 +16,7 @@ class Cell
   def hidden? = !revealed?
   def near_mine? = adjacent_mines_count.positive?
   def blank? = !mined? && !near_mine?
+  def safe? = !mined?
 
   def put_mine
     @mined = true
