@@ -1,5 +1,7 @@
 require "optparse"
 
+require_relative "cli/graphics"
+
 module Minesweeper
   class CLI
     def self.start(args)
@@ -55,7 +57,8 @@ module Minesweeper
       end
 
       def start_game
-        Game.new.start
+        Game.new(Graphics.new)
+            .start
       end
   end
 end

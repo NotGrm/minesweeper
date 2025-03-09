@@ -12,7 +12,11 @@ module Minesweeper
   class Game
     attr_reader :grid, :mines_count, :player
 
-    def initialize
+    attr_reader :graphics
+
+    def initialize(graphics = CLI::Graphics.new)
+      @graphics = graphics
+      
       @mines_count = 1 #4
       @row_count = 4
       @col_count = 3
@@ -39,7 +43,8 @@ module Minesweeper
           handle_quit(action)
           break
         else
-          puts "Action unknown, try new one!"
+          message = "Action unknown, try new one!"
+          graphics.display_error(message)
         end
 
         if game_over?
@@ -64,9 +69,7 @@ module Minesweeper
       end
     
       def drop_mines
-        # grid.sample(mines_count).each do |cell|
-        grid.find(0,0).then do |cell|
-          puts cell.inspect
+        grid.sample(mines_count).each do |cell|
           cell.put_mine
 
           grid.get_neighbours(cell)
@@ -75,7 +78,8 @@ module Minesweeper
       end
 
       def wait_user_input
-        puts "Which case would you like to reveal?"
+        message = "Which case would you like to reveal?"
+        graphics.display_message(message)
         gets.chomp
       end
 
@@ -95,7 +99,8 @@ module Minesweeper
         cell = grid.find(x -1, y - 1)
 
         unless cell
-          puts "Cell unknown, please try new coordinates"
+          message = "Cell unknown, please try new coordinates"
+          graphics.display_message(message)
           return
         end
 
@@ -109,15 +114,17 @@ module Minesweeper
       end
 
       def display_grid
-        puts grid.draw
+        graphics.display_grid(grid)
       end
 
       def display_lost_message
-        puts "You revealed a mine, game is lost…"
+        message = "You revealed a mine, game is lost…"
+        graphics.display_error(message)
       end
 
       def display_win_message
-        puts "You avoided all the mines! Congrats!"
+        message = "You avoided all the mines! Congrats!"
+        graphics.display_success(message)
       end
 
       def reveal_cells

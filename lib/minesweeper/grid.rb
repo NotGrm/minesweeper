@@ -18,6 +18,12 @@ class Grid
     @cells = matrix.flatten
   end
 
+  alias rows matrix
+
+  def column_count
+    rows.first.size
+  end
+
   def reveal_cell_and_neighbours(cell, visited = Set.new)
     return if visited.include?(cell)
     
@@ -58,23 +64,4 @@ class Grid
 
     [north, east, south, west].compact
   end 
-
-  def draw
-    [
-      draw_column_headers,
-      draw_matrix
-    ]
-  end
-
-  def draw_column_headers
-    column_count = matrix.first.size
-    
-    "| + |" + column_count.times.map { " #{it + 1} " }.join("|") + "|"
-  end
-
-  def draw_matrix
-    @matrix.collect.each_with_index do |row, i|
-      "| #{i + 1} |" + row.collect(&:to_s).join('|') + "|"
-    end.flatten(0)
-  end
 end

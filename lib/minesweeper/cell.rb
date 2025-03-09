@@ -34,19 +34,6 @@ class Cell
     other.is_a?(Cell) && other.x == x && other.y == y
   end
 
-  def to_s
-    case
-    when hidden?
-      " ? "
-    when mined?
-      " X "
-    when near_mine?
-      " #{adjacent_mines_count} " 
-    else
-      " · "
-    end
-  end
-
   def inspect
     "Cell(#{x + 1},#{y + 1})"
   end
