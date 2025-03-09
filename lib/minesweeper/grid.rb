@@ -1,7 +1,9 @@
 class Grid
   include Enumerable
 
-  attr_reader :matrix, :cells
+  MINE_REVEALED = 'mined_reveal.grid'.freeze
+
+  attr_reader :matrix, :cells, :observers
 
   def self.build(row_count, column_count)
     matrix = Array.new(row_count) do |row_index|
@@ -16,28 +18,34 @@ class Grid
   def initialize(matrix)
     @matrix = matrix
     @cells = matrix.flatten
+    @observers = []
   end
 
   alias rows matrix
+
+  def add_observer(observer)
+    observers << observer
+  end
 
   def column_count
     rows.first.size
   end
 
-  def reveal_cell_and_neighbours(cell, visited = Set.new)
+  def reveal_cell(cell, visited = Set.new)
     return if visited.include?(cell)
     
     cell.reveal!
 
-    return if cell.mined?
-    return if cell.near_mine?
+    notify(MINE_REVEALED) if cell.mined?
+
+    return unless cell.blank?
     
     visited << cell
 
     get_neighbours(cell).each do |neighbour|
       next if neighbour.mined?
 
-      reveal_cell_and_neighbours(neighbour, visited)
+      reveal_cell(neighbour, visited)
     end
   end
 
@@ -64,4 +72,10 @@ class Grid
 
     [north, east, south, west].compact
   end 
+
+  def notify(event)
+    observers.each do |obs|
+      obs.on_notify(event)
+    end
+  end
 end
