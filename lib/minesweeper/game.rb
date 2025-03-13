@@ -43,7 +43,7 @@ module Minesweeper
 
         break if over?
       end
-      
+
       if game_won?
         display_win_message
       else
@@ -55,7 +55,7 @@ module Minesweeper
       def over?
         player.dead? || mines_located?
       end
-      
+
       def game_won?
         player.alive?
       end
@@ -63,11 +63,11 @@ module Minesweeper
       def mines_located?
         grid.cells.select(&:hidden?).all?(&:mined?)
       end
-    
+
       def drop_mines
         grid.sample(mines_count).each do |cell|
           cell.put_mine
-          puts cell.inspect
+          # puts cell.inspect
 
           grid.get_neighbours(cell)
               .each(&:warn!)

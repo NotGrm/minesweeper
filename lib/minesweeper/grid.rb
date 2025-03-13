@@ -1,3 +1,5 @@
+require_relative 'exceptions'
+
 class Grid
   include Enumerable
 
@@ -33,13 +35,13 @@ class Grid
 
   def reveal_cell(cell, visited = Set.new)
     return if visited.include?(cell)
-    
+
     cell.reveal!
 
     notify(MINE_REVEALED) if cell.mined?
 
     return unless cell.blank?
-    
+
     visited << cell
 
     get_neighbours(cell).each do |neighbour|
@@ -47,6 +49,10 @@ class Grid
 
       reveal_cell(neighbour, visited)
     end
+  end
+
+  def flag_cell(cell)
+    cell.toggle_flag!
   end
 
   def reveal_all_cells!
@@ -71,7 +77,7 @@ class Grid
     west = matrix.dig(row, col  - 1) unless (col - 1).negative?
 
     [north, east, south, west].compact
-  end 
+  end
 
   def notify(event)
     observers.each do |obs|

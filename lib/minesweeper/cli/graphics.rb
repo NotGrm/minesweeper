@@ -61,6 +61,8 @@ module Minesweeper
 
         def build_cell(cell)
           case
+          when cell.flagged?
+            " F "
           when cell.hidden?
             " ? "
           when cell.mined?

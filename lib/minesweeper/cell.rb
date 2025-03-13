@@ -1,5 +1,5 @@
 class Cell
-  attr_reader :x, :y, :mined, :adjacent_mines_count, :revealed
+  attr_reader :x, :y, :mined, :adjacent_mines_count, :revealed, :flagged
 
   def initialize(x, y)
     @x = x
@@ -8,10 +8,12 @@ class Cell
     @mined = false
     @adjacent_mines_count = 0
     @revealed = false
+    @flagged = false
   end
 
   alias mined? mined
   alias revealed? revealed
+  alias flagged? flagged
 
   def hidden? = !revealed?
   def near_mine? = adjacent_mines_count.positive?
@@ -24,6 +26,10 @@ class Cell
 
   def reveal!
     @revealed = true
+  end
+
+  def toggle_flag!
+    @flagged = !@flagged
   end
 
   def warn!
