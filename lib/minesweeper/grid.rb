@@ -60,7 +60,7 @@ class Grid
   end
 
   def find(col, row)
-    @matrix.dig(row, col)
+    @matrix.dig(row, col) || raise(CellNotFound)
   end
 
   def sample(count)

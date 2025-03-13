@@ -13,10 +13,8 @@ module Minesweeper
       end
 
       def execute(grid)
-        x, y = coords
-        cell = grid.find(x - 1, y - 1)
-
-        raise CellNotGround if cell.nil?
+        coords => col, row
+        grid.find(col -1, row -1) => cell
 
         grid.reveal_cell(cell)
       end
