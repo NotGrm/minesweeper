@@ -2,10 +2,6 @@ require_relative "grid"
 require_relative "cell"
 require_relative "player"
 
-require_relative "action/defuse"
-require_relative "action/quit"
-require_relative "action/unsupported"
-
 require "debug"
 
 module Minesweeper
