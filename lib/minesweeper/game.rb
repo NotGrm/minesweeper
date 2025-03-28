@@ -1,5 +1,6 @@
-require_relative "grid"
 require_relative "cell"
+require_relative "difficulty"
+require_relative "grid"
 require_relative "player"
 
 require "debug"
@@ -10,13 +11,19 @@ module Minesweeper
 
     attr_reader :graphics, :controller
 
-    def initialize(graphics = CLI::Graphics.new, controller = CLI::Controller)
+    def initialize(
+      difficulty,
+      graphics = CLI::Graphics.new,
+      controller = CLI::Controller
+    )
       @graphics = graphics
       @controller = controller
-      
-      @mines_count = 4
-      @row_count = 4
-      @col_count = 3
+
+      @difficulty = Difficulty.find(difficulty)
+
+      @mines_count = @difficulty.mines_count
+      @row_count = @difficulty.row_count
+      @col_count = @difficulty.col_count
 
       @player = Player.new(lives: 1)
       @grid = Grid.build(@row_count, @col_count) do |row, col|
@@ -63,7 +70,6 @@ module Minesweeper
       def drop_mines
         grid.sample(mines_count).each do |cell|
           cell.put_mine
-          # puts cell.inspect
 
           grid.get_neighbours(cell)
               .each(&:warn!)

@@ -8,11 +8,13 @@ module Minesweeper
     def self.start(args)
       new(args).run
     end
-    
+
     def initialize(args)
       @args = args
-      @options = {}
-      
+      @options = {
+        difficulty: :beginner
+      }
+
       @option_parser = OptionParser.new do |opts|
         opts.banner = "Usage: minesweeper [options]"
 
@@ -23,8 +25,15 @@ module Minesweeper
         opts.on("-h", "--help", "Display help") do
           @options[:help] = true
         end
-      end
 
+        opts.on("--intermediate", "Play on intermediate difficulty") do
+          @options[:difficulty] = :intermediate
+        end
+
+        opts.on("--expert", "Play on expert difficulty") do
+          @options[:difficulty] = :expert
+        end
+      end
     end
 
     def run
@@ -59,10 +68,10 @@ module Minesweeper
 
       def start_game
         Game.new(
+          @options[:difficulty],
           Graphics.new,
           Controller
         ).start
       end
   end
 end
-
