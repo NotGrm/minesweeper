@@ -1,15 +1,25 @@
+require 'tty-table'
+
 module Minesweeper
   class CLI
     class Graphics
       def display_grid(grid)
-        rendered = ""
-        rendered << build_headers(grid)
+        table = TTY::Table.new(
+          header: table_headers(grid),
+          rows: grid.rows.map.with_index do |row, index|
+            table_row(row, index)
+          end
+        )
 
-        grid.rows.each_with_index do |row, index|
-          rendered << build_row(row, index)
-        end
+        renderer = TTY::Table::Renderer::Unicode.new(
+          table,
+          alignments: [:right, :center],
+          width: 999, # Ensure expert table is not truncated
+          column_widths: 3,
+          border: { separator: :each_row }
+        )
 
-        puts rendered
+        puts renderer.render
       end
 
       def display_success(success)
@@ -29,48 +39,42 @@ module Minesweeper
       end
 
       private
-        def build_headers(grid)
-          rendered = ""
-          rendered << "| + |" # Empty header to leave space for columns headers
+        def table_headers(grid)
+          headers = [" "] # Empty header to leave space for rows headers
 
           grid.column_count.times do |index|
-            rendered << " #{index + 1} "
-            rendered << "|"
+            value = (index + 1)
+            alignment = value > 9 ? :right : :center
+            headers << { value:, alignment: }
           end
 
-          rendered << "\n"
-
-          rendered
+          headers
         end
 
         # @param [Array<Cell>] row
         # @param [Integer] index
-        def build_row(row, index)
-          rendered = ""
-          rendered << "| #{ index + 1} |"
+        def table_row(cells, index)
+          row = [{value: index + 1, alignment: :right}] # Row header
 
-          row.each do |cell|
-            rendered << build_cell(cell)
-            rendered << "|"
+          cells.each do |cell|
+            row << { value: build_cell(cell), alignment: :center}
           end
 
-          rendered << "\n"
-
-          rendered
+          row
         end
 
         def build_cell(cell)
           case
           when cell.flagged?
-            " F "
+            "F"
           when cell.hidden?
-            " ? "
+            "?"
           when cell.mined?
-            " X "
+            "X"
           when cell.near_mine?
-            " #{cell.adjacent_mines_count} "
+            "#{cell.adjacent_mines_count}"
           else
-            " . "
+            "."
           end
       end
     end
