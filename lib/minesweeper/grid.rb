@@ -38,7 +38,10 @@ class Grid
 
     cell.reveal!
 
-    notify(MINE_REVEALED) if cell.mined?
+    if cell.mined?
+      reveal_all_cells!
+      notify(MINE_REVEALED)
+    end
 
     return unless cell.blank?
 
@@ -71,12 +74,21 @@ class Grid
     row = cell.y
     col = cell.x
 
-    north = matrix.dig(row - 1, col) unless (row - 1).negative?
-    east = matrix.dig(row, col + 1)
-    south = matrix.dig(row + 1, col)
-    west = matrix.dig(row, col  - 1) unless (col - 1).negative?
+    vectors = [-1, 0, 1].product([-1, 0, 1]) - [[0, 0]]
 
-    [north, east, south, west].compact
+    vectors.filter_map do |vector|
+      dest_row = row + vector[0]
+      dest_col = col + vector[1]
+
+      matrix.dig(dest_row, dest_col) if dest_row.positive? && dest_col.positive?
+    end
+
+    # north = matrix.dig(row - 1, col) unless (row - 1).negative?
+    # east = matrix.dig(row, col + 1)
+    # south = matrix.dig(row + 1, col)
+    # west = matrix.dig(row, col  - 1) unless (col - 1).negative?
+
+    # [north, east, south, west].compact
   end
 
   def notify(event)
