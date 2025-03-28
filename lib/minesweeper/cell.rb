@@ -25,6 +25,7 @@ class Cell
   end
 
   def reveal!
+    @flagged = false
     @revealed = true
   end
 
@@ -44,4 +45,3 @@ class Cell
     "Cell(#{x + 1},#{y + 1})"
   end
 end
-
