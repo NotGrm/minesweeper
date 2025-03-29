@@ -31,6 +31,7 @@ module Minesweeper
           table,
           alignments: [:right, :center],
           width: 999, # Ensure expert table is not truncated
+          column_widths: 2,
           border: { separator: :each_row }
         )
 
