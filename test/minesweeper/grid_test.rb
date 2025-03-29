@@ -1,6 +1,11 @@
 require "test_helper"
 
 class GridTest < Minitest::Test
+  def assert_same_elements(expected, actual, message = nil)
+    assert_equal expected.size, actual.size, message
+    assert_empty expected.difference(actual), message
+  end
+
   def test_build_grid
     grid = Grid.build(2, 2) do
       0
@@ -10,43 +15,43 @@ class GridTest < Minitest::Test
   end
 
   def test_get_cell_neighbours
-    grid = Grid.build(4,4) do |row, col|
+    grid = Grid.build(3, 3) do |row, col|
       Cell.new(col, row)
     end
 
-    upper_left = grid.find(0, 0)
-    upper_left_neighbours = grid.get_neighbours(upper_left)
+    assert_same_elements [
+      grid.find(0, 0), # top_left_corner
+      grid.find(1, 0), # top_center
+      grid.find(2, 0), # top_right_corner
+      grid.find(0, 1), # middle_left
+      grid.find(2, 1), # middle_right
+      grid.find(0, 2), # bottom_left_corner
+      grid.find(1, 2), # bottom_center
+      grid.find(2, 2), # bottom_right_corner
+    ], grid.get_neighbours(grid.find(1, 1)), "center"
 
-    assert_equal 2, upper_left_neighbours.size   
-    assert_equal [Cell.new(1, 0), Cell.new(0, 1)], upper_left_neighbours
+    assert_same_elements [
+      grid.find(1, 0), # top_center
+      grid.find(0, 1), # middle_left
+      grid.find(1, 1), # center
+    ], grid.get_neighbours(grid.find(0, 0)), "top_left_corner"
 
-    upper_right = grid.find(3, 0)
-    upper_right_neighbours = grid.get_neighbours(upper_right)
+    assert_same_elements [
+      grid.find(1, 0), # top_center
+      grid.find(2, 1), # middle_right
+      grid.find(1, 1), # center
+    ], grid.get_neighbours(grid.find(2, 0)), "top_right_corner"
 
-    assert_equal 2, upper_right_neighbours.size
-    assert_equal [Cell.new(3, 1), Cell.new(2, 0)], upper_right_neighbours
-        
-    lower_right = grid.find(3, 3)
-    lower_right_neighbours = grid.get_neighbours(lower_right)
+    assert_same_elements [
+      grid.find(1, 2), # bottom_center
+      grid.find(2, 1), # middle_right
+      grid.find(1, 1), # center
+    ], grid.get_neighbours(grid.find(2, 2)), "bottom_right_corner"
 
-    assert_equal 2, lower_right_neighbours.size
-    assert_equal [Cell.new(3, 2), Cell.new(2, 3)], lower_right_neighbours
-        
-    lower_left = grid.find(0, 3)
-    lower_left_neighbours = grid.get_neighbours(lower_left)
-
-    assert_equal 2, lower_left_neighbours.size
-    assert_equal [Cell.new(0, 2), Cell.new(1, 3)], lower_left_neighbours
-
-    middle = grid.find(1,1)
-    middle_neighbours = grid.get_neighbours(middle)
-    
-    assert_equal 4, middle_neighbours.size
-    assert_equal [
-      Cell.new(1, 0),
-      Cell.new(2, 1),
-      Cell.new(1, 2),
-      Cell.new(0, 1)
-    ], middle_neighbours
+    assert_same_elements [
+      grid.find(1, 2), # bottom_center
+      grid.find(0, 1), # middle_left
+      grid.find(1, 1), # center
+    ], grid.get_neighbours(grid.find(0, 2)), "bottom_left_corner"
   end
 end

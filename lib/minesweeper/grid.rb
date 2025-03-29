@@ -3,6 +3,8 @@ require_relative 'exceptions'
 class Grid
   include Enumerable
 
+  CellNotFound = Class.new(StandardError)
+
   MINE_REVEALED = 'mined_reveal.grid'.freeze
 
   attr_reader :matrix, :cells, :observers
@@ -80,7 +82,7 @@ class Grid
       dest_row = row + vector[0]
       dest_col = col + vector[1]
 
-      matrix.dig(dest_row, dest_col) if dest_row.positive? && dest_col.positive?
+      matrix.dig(dest_row, dest_col) if dest_row >= 0 && dest_col >= 0
     end
 
     # north = matrix.dig(row - 1, col) unless (row - 1).negative?

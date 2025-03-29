@@ -43,6 +43,10 @@ class Cell
     other.is_a?(Cell) && other.x == x && other.y == y
   end
 
+  def eql?(other)
+    self == other
+  end
+
   def inspect
     "Cell(#{x + 1},#{y + 1})"
   end
