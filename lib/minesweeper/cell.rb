@@ -30,6 +30,8 @@ class Cell
   end
 
   def toggle_flag!
+    return if revealed?
+
     @flagged = !@flagged
   end
 
