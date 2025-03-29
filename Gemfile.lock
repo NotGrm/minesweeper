@@ -54,6 +54,7 @@ DEPENDENCIES
   debug
   minitest
   minitest-reporters
+  pastel
   tty-table
 
 RUBY VERSION

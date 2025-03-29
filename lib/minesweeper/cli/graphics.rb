@@ -1,8 +1,24 @@
+require 'pastel'
 require 'tty-table'
 
 module Minesweeper
   class CLI
     class Graphics
+      def initialize
+        pastel = Pastel.new
+
+        @cell_outputs = {
+          flagged: pastel.bright_yellow('🚩'),
+          hidden: pastel.bright_white('⬜️'),
+          mined: pastel.bright_red('💣'),
+          one_mine_near: pastel.bright_cyan('1'),
+          two_mines_near: pastel.bright_green('2'),
+          three_mines_near: pastel.bright_red('3'),
+          four_mines_near: pastel.bright_magenta('4'),
+          none: ''
+        }.freeze
+      end
+
       def display_grid(grid)
         table = TTY::Table.new(
           header: table_headers(grid),
@@ -15,7 +31,6 @@ module Minesweeper
           table,
           alignments: [:right, :center],
           width: 999, # Ensure expert table is not truncated
-          column_widths: 3,
           border: { separator: :each_row }
         )
 
@@ -44,7 +59,7 @@ module Minesweeper
 
           grid.column_count.times do |index|
             value = (index + 1)
-            alignment = value > 9 ? :right : :center
+            alignment = :right
             headers << { value:, alignment: }
           end
 
@@ -66,15 +81,26 @@ module Minesweeper
         def build_cell(cell)
           case
           when cell.flagged?
-            "F"
+            @cell_outputs[:flagged]
           when cell.hidden?
-            "?"
+            @cell_outputs[:hidden]
           when cell.mined?
-            "X"
+            @cell_outputs[:mined]
           when cell.near_mine?
-            "#{cell.adjacent_mines_count}"
+            case cell.adjacent_mines_count
+            when 1
+              @cell_outputs[:one_mine_near]
+            when 2
+              @cell_outputs[:two_mines_near]
+            when 3
+              @cell_outputs[:three_mines_near]
+            when 4
+              @cell_outputs[:four_mines_near]
+            else
+              cell.adjacent_mines_count.to_s
+            end
           else
-            "."
+            @cell_outputs[:none]
           end
       end
     end
