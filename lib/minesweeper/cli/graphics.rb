@@ -87,19 +87,16 @@ module Minesweeper
             @cell_outputs[:hidden]
           when cell.mined?
             @cell_outputs[:mined]
+          when cell.near_mine? && cell.adjacent_mines_count == 1
+            @cell_outputs[:one_mine_near]
+          when cell.near_mine? && cell.adjacent_mines_count == 2
+            @cell_outputs[:two_mines_near]
+          when cell.near_mine? && cell.adjacent_mines_count == 3
+            @cell_outputs[:three_mines_near]
+          when cell.near_mine? && cell.adjacent_mines_count == 4
+            @cell_outputs[:four_mines_near]
           when cell.near_mine?
-            case cell.adjacent_mines_count
-            when 1
-              @cell_outputs[:one_mine_near]
-            when 2
-              @cell_outputs[:two_mines_near]
-            when 3
-              @cell_outputs[:three_mines_near]
-            when 4
-              @cell_outputs[:four_mines_near]
-            else
-              cell.adjacent_mines_count.to_s
-            end
+            cell.adjacent_mines_count.to_s
           else
             @cell_outputs[:none]
           end
